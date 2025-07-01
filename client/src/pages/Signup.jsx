@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { data, Link , useNavigate} from 'react-router-dom'
 
-export default function Signout() {
+export default function SignUp() {
   const [formData,setFormData]=useState({})
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
