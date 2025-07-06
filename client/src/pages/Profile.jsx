@@ -1,17 +1,19 @@
 import React, { use } from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector ,useDispatch } from 'react-redux';
 import {useRef,useState , useEffect} from 'react'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import { app } from '../firebase';
-
+import {updateUserFailure,updateUserStart,updateUserSuccess} from '../redux/user/userSlice.js';
 
 export default function () {
-  const {currentUser}=useSelector((state)=>state.user);
+  const dispatch=useDispatch();
+  const {currentUser , loading ,error}=useSelector((state)=>state.user);
   const fileRef=useRef(null);
   const [file,setFile]=useState(undefined)
   const [filePerc,setFilePerc]=useState(0);
   const [fileUploadError,setFileUploadError]=useState(false);
   const [formData,setFormData]=useState({})
+  const [UpdateSuccess,setUpdateSuccess]=useState(false)
 
   console.log(file)
 
@@ -47,14 +49,40 @@ export default function () {
 
   }
 
+const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
   return (
     <div className='p-3 max-w-lg mx-auto'>
      <h1 className='text-slate-800 text-center uppercase p-3 text-3xl font-semibold'> 
       Profile 
      </h1>
      
-     <form className='flex flex-col gap-4'>
+     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
       <input onChange={(e)=>setFile(e.target.files[0])} type="file" ref={fileRef} className='hidden ' accept='image/*' />
 
       <img  className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2' 
@@ -77,19 +105,30 @@ export default function () {
       
      
 
-      <input type="text" placeholder='Username' className='rounded-lg p-3 border' id='username'/>
-      <input type="email" placeholder='email' className='rounded-lg p-3 border' id='email'/>
-      <input type="password" placeholder='password' className='rounded-lg p-3 border' id='password'/>
-      
-      <button className='bg-slate-700 rounded-lg p-3 border hover:opacity-95 text-white disabled:opacity-80'>Update</button>
+      <input type="text" placeholder='Username' className='rounded-lg p-3 border' 
+      defaultValue={currentUser.username} id='username' onChange={handleChange}/>
 
-      <button className='bg-green-600 rounded-lg p-3 border hover:opacity-95 text-white disabled:opacity-80'>Create Listing</button>
+      <input type="email" placeholder='email' className='rounded-lg p-3 border' 
+      defaultValue={currentUser.email} id='email' onChange={handleChange}/>
+
+      <input type="password" placeholder='password' className='rounded-lg p-3 border'
+       id='password' onChange={handleChange}/>
+      
+      <button disabled={loading} className='bg-slate-700 rounded-lg p-3 border hover:opacity-95
+       text-white disabled:opacity-80'>
+        {loading ? 'loading..' : 'Update'}
+       </button>
+
+      <button className='bg-green-600 rounded-lg p-3 border hover:opacity-95
+       text-white disabled:opacity-80'>Create Listing</button>
 
      </form>
      <div className='flex mt-5 justify-between'>
       <span className='text-red-700 cursor-pointer'>Delete Account</span>
       <span className='text-red-700 cursor-pointer'>Sign out</span>
      </div>
+     <p className='text-red-700 mt-5'>{error ? error:''}</p>
+      <p className='text-green-700 mt-5'>{UpdateSuccess?'Updated Successfully':''}</p>
     </div>
   )
 }
