@@ -6,6 +6,7 @@ import { app } from '../firebase';
 import {updateUserFailure,updateUserStart,updateUserSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,
   signOutUserStart,signOutUserFailure,signOutUserSuccess
 } from '../redux/user/userSlice.js';
+import { Link } from 'react-router-dom';
 
 export default function () {
   const dispatch=useDispatch();
@@ -154,9 +155,10 @@ const handleChange = (e) => {
        text-white disabled:opacity-80'>
         {loading ? 'loading..' : 'Update'}
        </button>
-
-      <button className='bg-green-600 rounded-lg p-3 border hover:opacity-95
-       text-white disabled:opacity-80'>Create Listing</button>
+      
+      <Link to='/create-listing' className='bg-green-600 rounded-lg p-3 border hover:opacity-95
+       text-white disabled:opacity-80 text-center'>Create Listing</Link>
+      
 
      </form>
      <div className='flex mt-5 justify-between'>
