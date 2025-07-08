@@ -130,6 +130,23 @@ const handleChange = (e) => {
       setShowListingsError(true)
     }
   }
+  const handleListingDelete=async(listingId)=>{
+    try {
+      const res= await fetch(`/api/listing/delete/${listingId}`,{
+        method:'DELETE',
+      });
+      const data=res.json()
+      if(data.success===false){
+        console.log(data.message)
+        return;
+      }
+      setUserListings((prev)=>prev.filter((listing)=>listing._id!==listingId));
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
   return (
     <div className='p-3 max-w-lg mx-auto'>
      <h1 className='text-slate-800 text-center uppercase p-3 text-3xl font-semibold'> 
