@@ -74,7 +74,7 @@ export default function Listing() {
                 copied  &&(<p className='fixed top-[23%] right-[5%] z-10 border bg-slate-100 rounded-md p-2'>Link copied!</p>)
                 }
                 <div className='flex flex-col max-w-4xl mx-auto p-3 my-7 gap-3'>
-                    <p className='text-2xl font-semibold'>{listing.name} - ${" "}{
+                    <p className='text-2xl font-semibold'>{listing.name} - Rs{" "}{
                      listing.offer ? listing.discountPrice.toLocaleString('en-US') 
                      :listing.regularPrice.toLocaleString('en-US')   }
                      {listing.type=='rent' && ' /month'}</p>
@@ -88,7 +88,7 @@ export default function Listing() {
                         </p>
                         
                         {listing.offer && (
-                            <p className='bg-green-900 w-full max-w-[200px] text-white text-center rounded-lg p-1'>Disount ${+listing.regularPrice-  +listing.discountPrice}</p>
+                            <p className='bg-green-900 w-full max-w-[200px] text-white text-center rounded-lg p-1'>Disount Rs {+listing.regularPrice-  +listing.discountPrice}</p>
                         )} 
                         
 

@@ -223,7 +223,7 @@ export default function UpdateListing() {
                         <p>Regular Price</p>
                         {formData.type=='rent' &&(
 
-                        <span className='text-xs'> ($ / month)</span>
+                        <span className='text-xs'> (Rs / month)</span>
                         )}
                     </div>    
                 </div>
@@ -235,7 +235,7 @@ export default function UpdateListing() {
                         <p>Discount Price</p>
                         {formData.type=='rent' &&(
 
-                        <span className='text-xs'> ($ / month)</span>
+                        <span className='text-xs'> (Rs / month)</span>
                         )}
                         
                     </div>
